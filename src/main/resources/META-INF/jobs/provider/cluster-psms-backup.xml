@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- Oracle Query after the ctas is added
+        select  sequence,
+            mods,
+            taxid,
+            assay_accession,
+            project_accession,
+            cluster_id
+        from
+            proteomes_view;
+        -->
+    <bean id="psmClusterReader" scope="step"
+          class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <!--to-do change to a normal query to cluster when the pipeline is working-->
+        <property name="dataSource" ref="clusterDataSource"/>
+        <property name="sql">
+            <value>
+                select
+                    sequence,
+                    mods,
+                    taxid,
+                    assay_accession,
+                    project_accession,
+                    cluster_id
+                from
+                    proteomes
+            </value>
+        </property>
+        <property name="rowMapper">
+            <bean class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.mapper.PsmsClusterRowMapper"/>
+        </property>
+        <property name="fetchSize" value="10000"/>
+    </bean>
+
+    <bean id="psmClusterItemProcessor" scope="step"
+          class="org.springframework.batch.item.support.CompositeItemProcessor">
+        <property name="delegates">
+            <list>
+                <ref bean="psmModMapper"/>
+                <ref bean="psmValidator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="psmClusterWriter" class="org.springframework.batch.item.support.CompositeItemWriter" >
+        <property name="delegates">
+            <list>
+                <ref bean="delegatePsmClusterWriter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="psmModMapper"
+          class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.filter.ClusterPsmItemMapMods"/>
+
+
+    <bean id="psmValidator" class="org.springframework.batch.item.validator.ValidatingItemProcessor">
+        <property name="filter" value="false"/>
+        <property name="validator" ref="defaultValidator"/>
+    </bean>
+
+    <bean id="delegatePsmClusterWriter" class="org.springframework.batch.item.database.JpaItemWriter" >
+        <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
+    </bean>
+
+    <!-- Uncomment for writing in a file-->
+    <!--<bean id="delegatePsmClusterWriter" scope="step" class="org.springframework.batch.item.file.FlatFileItemWriter">-->
+         <!--&lt;!&ndash;write to this csv file &ndash;&gt;-->
+        <!--<property name="resource" value="file:ouput/psm-cluster.csv"/>-->
+        <!--<property name="shouldDeleteIfExists" value="true"/>-->
+
+        <!--<property name="lineAggregator">-->
+            <!--<bean-->
+                    <!--class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">-->
+                <!--<property name="delimiter">-->
+                    <!--<util:constant-->
+                            <!--static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB"/>-->
+                <!--</property>-->
+                <!--<property name="fieldExtractor">-->
+                    <!--<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">-->
+                        <!--<property name="names" value="psmId,sequence,taxid,modifications,assayAccession,projectAccession,clusterId"/>-->
+                    <!--</bean>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>

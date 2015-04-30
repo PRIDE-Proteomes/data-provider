@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="peptiformGeneratorClusterReader"
+          class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.reader.PeptiformItemClusterReader">
+        <property name="delegate" ref="delegatePeptiformGeneratorClusterReader"/>
+    </bean>
+
+    <bean id="peptiformGeneratorClusterItemProcessor"
+          class="org.springframework.batch.item.support.CompositeItemProcessor">
+        <property name="delegates">
+            <list>
+                <ref bean="peptiformGeneratorFilter"/>
+                <ref bean="peptiformGeneratorModFilter"/>
+                <ref bean="peptiformGeneratorValidator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="peptiformGeneratorClusterWriter" class="org.springframework.batch.item.support.CompositeItemWriter" >
+        <property name="delegates">
+            <list>
+                <ref bean="delegatePeptiformGeneratorClusterWriter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Oracle Query after the ctas is added
+    select  sequence,
+        mods,
+        taxid,
+        assay_accession,
+        project_accession,
+        cluster_id
+    from
+        proteomes_view;
+    -->
+    <bean id="delegatePeptiformGeneratorClusterReader"
+          class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="proteomesDataSource"/>
+        <property name="sql">
+            <value>
+                select
+                    sequence,
+                    mods,
+                    taxid,
+                    assay_accession,
+                    project_accession,
+                    cluster_id
+                from
+                    cluster_psm
+                order by
+                    sequence,
+                    taxid,
+                    mods,
+                    cluster_id,
+                    project_accession,
+                    assay_accession
+            </value>
+        </property>
+        <property name="rowMapper">
+            <bean class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.mapper.PeptiformClusterRowMapper"/>
+        </property>
+        <property name="fetchSize" value="2000"/>
+    </bean>
+
+
+    <bean id="peptiformGeneratorValidator" class="org.springframework.batch.item.validator.ValidatingItemProcessor">
+        <property name="filter" value="false"/>
+        <property name="validator" ref="defaultValidator"/>
+    </bean>
+
+    <bean id="peptiformGeneratorFilter"
+          class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.filter.PeptiformItemFilter"/>
+
+    <bean id="peptiformGeneratorModFilter"
+          class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.filter.PeptiformItemInvalidModFilter"/>
+
+    <!-- Uncomment for writing in the DB-->
+    <bean id="delegatePeptiformGeneratorClusterWriter" class="org.springframework.batch.item.database.JpaItemWriter" >
+        <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
+    </bean>
+
+    <!-- Uncomment for writing in a file-->
+    <!--<bean id="delegatePeptiformGeneratorClusterWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">-->
+         <!--&lt;!&ndash;write to this csv file &ndash;&gt;-->
+        <!--<property name="resource" value="file:ouput/peptiform-cluster.csv"/>-->
+        <!--<property name="shouldDeleteIfExists" value="true"/>-->
+
+        <!--<property name="lineAggregator">-->
+            <!--<bean-->
+                    <!--class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">-->
+                <!--<property name="delimiter">-->
+                    <!--<util:constant-->
+                            <!--static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB"/>-->
+                <!--</property>-->
+                <!--<property name="fieldExtractor">-->
+                    <!--<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">-->
+                        <!--<property name="names" value="peptideRepresentation,peptideId,sequence,description,taxid,cellTypes,diseases,tissues,score,assays,clusters"/>-->
+                    <!--</bean>-->
+                <!--</property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>

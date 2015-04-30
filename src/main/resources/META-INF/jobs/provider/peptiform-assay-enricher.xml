@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="peptiformAssayEnricherReader" class="org.springframework.batch.item.database.JpaPagingItemReader" >
+        <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
+        <property name="queryString" value="select a from Assay a"/>
+
+        <!--Avoids a new transaction every page is created snd avoids spring batch Caused by: java.lang.IllegalStateException: Transaction already active-->
+        <property name="transacted" value="false"/>
+
+        <property name="pageSize" value="500"/>
+    </bean>
+
+    <bean id="peptiformAssayEnricherItemProcessor"
+          class="org.springframework.batch.item.support.CompositeItemProcessor">
+        <property name="delegates">
+            <list>
+                <ref bean="peptiformAssayEnricher"/>
+                <ref bean="peptiformAssayEnricherValidator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="peptiformAssayEnricherWriter" class="org.springframework.batch.item.support.CompositeItemWriter" >
+        <property name="delegates">
+            <list>
+                <ref bean="delegatePeptiformAssayEnricherWriter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="peptiformAssayEnricher"
+          class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.enricher.PeptiformAssayEnricher"/>
+
+    <bean id="peptiformAssayEnricherValidator" class="org.springframework.batch.item.validator.ValidatingItemProcessor">
+        <property name="filter" value="false"/>
+        <property name="validator" ref="defaultValidator"/>
+    </bean>
+
+    <!-- Uncomment for writing in the DB-->
+    <bean id="delegatePeptiformAssayEnricherWriter" class="org.springframework.batch.item.database.JpaItemWriter" >
+        <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
+    </bean>
+
+    <!-- Uncomment for writing in a file-->
+    <!--<bean id="delegatePeptiformGeneratorClusterWriter" class="org.springframework.batch.item.file.FlatFileItemWriter">-->
+    <!--&lt;!&ndash;write to this csv file &ndash;&gt;-->
+    <!--<property name="resource" value="file:ouput/peptiform-cluster.csv"/>-->
+    <!--<property name="shouldDeleteIfExists" value="true"/>-->
+
+    <!--<property name="lineAggregator">-->
+    <!--<bean-->
+    <!--class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">-->
+    <!--<property name="delimiter">-->
+    <!--<util:constant-->
+    <!--static-field="org.springframework.batch.item.file.transform.DelimitedLineTokenizer.DELIMITER_TAB"/>-->
+    <!--</property>-->
+    <!--<property name="fieldExtractor">-->
+    <!--<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">-->
+    <!--<property name="names" value="peptideRepresentation,peptideId,sequence,description,taxid,cellTypes,diseases,tissues,score,assays,clusters"/>-->
+    <!--</bean>-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+</beans>
