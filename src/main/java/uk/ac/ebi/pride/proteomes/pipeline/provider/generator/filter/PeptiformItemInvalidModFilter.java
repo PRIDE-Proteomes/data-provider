@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemProcessor;
 import uk.ac.ebi.pride.proteomes.db.core.api.modification.Modification;
 import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationLocation;
-import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationRepository;
+import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationProteomesRepository;
 import uk.ac.ebi.pride.proteomes.db.core.api.peptide.Peptiform;
 import uk.ac.ebi.pridemod.ModReader;
 import uk.ac.ebi.pridemod.model.PRIDEModPTM;
@@ -24,7 +24,7 @@ public class PeptiformItemInvalidModFilter implements ItemProcessor<Peptiform, P
 
 
     @Resource
-    private ModificationRepository modificationRepository;
+    private ModificationProteomesRepository modificationRepository;
 
 
     public static final String SPLIT_CHAR = ":";

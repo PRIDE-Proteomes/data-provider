@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.archive.repo.assay.service.AssaySummary;
 import uk.ac.ebi.pride.archive.repo.param.service.CvParamSummary;
 import uk.ac.ebi.pride.proteomes.db.core.api.assay.Assay;
 import uk.ac.ebi.pride.proteomes.db.core.api.assay.AssayProteomesRepository;
-import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationRepository;
+import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationProteomesRepository;
 import uk.ac.ebi.pride.proteomes.db.core.api.param.*;
 import uk.ac.ebi.pride.proteomes.db.core.api.peptide.PeptideRepository;
 
@@ -37,8 +37,8 @@ public class PeptiformAssayEnricher implements ItemProcessor<Assay, Assay> {
     private AssayProteomesRepository proteomesAssayRepository;
 
     @Autowired
-    @Qualifier("modificationRepository")
-    private ModificationRepository modificationRepository;
+    @Qualifier("modificationProteomesRepository")
+    private ModificationProteomesRepository modificationRepository;
 
     @Autowired
     @Qualifier("peptideRepository")

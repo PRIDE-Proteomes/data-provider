@@ -14,22 +14,22 @@
     <batch:job id="proteomesDataProviderJob" xmlns="http://www.springframework.org/schema/batch"
                incrementer="incrementer" job-repository="jobRepository" restartable="true">
 
-        <!--<batch:step id="peptiformClusterPsmBackupStep" next="peptiformGeneratorClusterStep">-->
-            <!--<batch:tasklet start-limit="5" transaction-manager="proteomesTransactionManager">-->
-                <!--<batch:chunk reader="psmClusterReader"-->
-                             <!--processor="psmClusterItemProcessor"-->
-                             <!--writer="psmClusterWriter"-->
-                             <!--commit-interval="50000" skip-limit="1000000" >-->
-                    <!--<batch:skippable-exception-classes>-->
-                        <!--<batch:include class="org.springframework.batch.item.validator.ValidationException"/>-->
-                    <!--</batch:skippable-exception-classes>-->
-                <!--</batch:chunk>-->
-            <!--</batch:tasklet>-->
-            <!--<batch:listeners>-->
-                <!--<listener ref="stepListener"/>-->
-                <!--<listener ref="writeListener"/>-->
-            <!--</batch:listeners>-->
-        <!--</batch:step>-->
+        <batch:step id="peptiformClusterPsmBackupStep" next="peptiformGeneratorClusterStep">
+            <batch:tasklet start-limit="5" transaction-manager="proteomesTransactionManager">
+                <batch:chunk reader="psmClusterReader"
+                             processor="psmClusterItemProcessor"
+                             writer="psmClusterWriter"
+                             commit-interval="50000" skip-limit="1000000" >
+                    <batch:skippable-exception-classes>
+                        <batch:include class="org.springframework.batch.item.validator.ValidationException"/>
+                    </batch:skippable-exception-classes>
+                </batch:chunk>
+            </batch:tasklet>
+            <batch:listeners>
+                <listener ref="stepListener"/>
+                <listener ref="writeListener"/>
+            </batch:listeners>
+        </batch:step>
 
         <batch:step id="peptiformGeneratorClusterStep" next="peptiformAssayEnricherStep">
             <batch:tasklet start-limit="5" transaction-manager="proteomesTransactionManager">

@@ -154,7 +154,7 @@
         <!-- pride proteomes -->
         <dependency>
             <groupId>uk.ac.ebi.pride.proteomes.db</groupId>
-            <artifactId>pride-proteomes-db-core</artifactId>
+            <artifactId>db-core</artifactId>
             <version>${proteomes.db.core.version}</version>
         </dependency>
 

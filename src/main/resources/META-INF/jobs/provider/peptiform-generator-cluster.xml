@@ -28,16 +28,6 @@
         </property>
     </bean>
 
-    <!-- Oracle Query after the ctas is added
-    select  sequence,
-        mods,
-        taxid,
-        assay_accession,
-        project_accession,
-        cluster_id
-    from
-        proteomes_view;
-    -->
     <bean id="delegatePeptiformGeneratorClusterReader"
           class="org.springframework.batch.item.database.JdbcCursorItemReader">
         <property name="dataSource" ref="proteomesDataSource"/>

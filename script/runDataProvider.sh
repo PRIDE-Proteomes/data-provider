@@ -35,4 +35,4 @@ done
 
 ##### RUN it on the production LSF cluster #####
 ##### NOTE: you can change LSF group to modify the number of jobs can be run concurrently #####
-bsub -e error.txt -o output.txt -M ${MEMORY_LIMIT} -q production-rh6 -J ${JOB_NAME} -N -u ${JOB_EMAIL} java -jar ${project.build.finalName}.jar
+bsub -e error.txt -o output.txt -M ${MEMORY_LIMIT} -q production-rh6 -J ${JOB_NAME} -N -u ${JOB_EMAIL} java -Xmx${MEMORY_LIMIT}m -jar pride-proteomes-data-provider-1.0.0-SNAPSHOT.jar
