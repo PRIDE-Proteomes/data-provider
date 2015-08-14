@@ -11,6 +11,7 @@ import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationLocation;
 import uk.ac.ebi.pride.proteomes.db.core.api.peptide.Peptiform;
 import uk.ac.ebi.pride.proteomes.db.core.api.utils.PeptideUtils;
 import uk.ac.ebi.pride.proteomes.db.core.api.utils.ScoreUtils;
+import uk.ac.ebi.pride.proteomes.pipeline.mods.Modification;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -113,7 +114,7 @@ public class PeptiformClusterRowMapper implements RowMapper<Peptiform>, Initiali
             String[] mods = modColumn.split(",");
 
             for (String mod : mods) {
-                uk.ac.ebi.pride.proteomes.pipeline.mods.Modification mzTabMod = uk.ac.ebi.pride.proteomes.pipeline.mods.Modification.parseModification(mod);
+                Modification mzTabMod = Modification.parseModification(mod);
 
                 if (mzTabMod == null) {
                     log.warn("Modification not parseable: " + mod);

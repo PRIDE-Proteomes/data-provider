@@ -5,14 +5,24 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
 
+    <import resource="classpath:META-INF/jobs/provider/db-cleaner-tasklet.xml"/>
+    <import resource="classpath:META-INF/jobs/provider/cluster-psms-backup.xml"/>
     <import resource="classpath:META-INF/jobs/provider/peptiform-generator-cluster.xml"/>
     <import resource="classpath:META-INF/jobs/provider/peptiform-assay-enricher.xml"/>
     <import resource="classpath:META-INF/jobs/provider/peptiform-assay-propagator.xml"/>
-    <import resource="classpath:META-INF/jobs/provider/cluster-psms-backup.xml"/>
+
 
 
     <batch:job id="proteomesDataProviderJob" xmlns="http://www.springframework.org/schema/batch"
                incrementer="incrementer" job-repository="jobRepository" restartable="true">
+
+        <batch:step id="peptiformCleanerStep" next="peptiformClusterPsmBackupStep">
+            <batch:tasklet transaction-manager="proteomesTransactionManager" ref="dbCleanerTasklet"/>
+            <batch:listeners>
+                <listener ref="stepListener"/>
+                <listener ref="writeListener"/>
+            </batch:listeners>
+        </batch:step>
 
         <batch:step id="peptiformClusterPsmBackupStep" next="peptiformGeneratorClusterStep">
             <batch:tasklet start-limit="5" transaction-manager="proteomesTransactionManager">
@@ -89,6 +99,8 @@
         </batch:step>
     </batch:job>
 
+
+    <!--Common part: Do we need to move it?-->
     <bean id="incrementer" class="org.springframework.batch.core.launch.support.RunIdIncrementer"/>
 
     <!--default validator -->

@@ -56,7 +56,7 @@ public class PeptiformItemInvalidModFilter implements ItemProcessor<Peptiform, P
 
                         String type = splittedAccession[0];
 
-                        //At this point the modifications have been remap to PRIMODs
+                        //At this point the modifications have been remapped to PRIMODs
                         assert uk.ac.ebi.pride.proteomes.pipeline.mods.Modification.findType(type).equals(uk.ac.ebi.pride.proteomes.pipeline.mods.Modification.Type.PRDMOD);
 
                         PTM ptm = modReader.getPTMbyAccession(accession);

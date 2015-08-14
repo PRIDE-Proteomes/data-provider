@@ -36,7 +36,7 @@ public class PsmsClusterRowMapper implements RowMapper<ClusterPsm>, Initializing
         item.setProjectAccession(rs.getString(PROJECT_COLUMN));
         item.setClusterId(rs.getString(CLUSTER_ID_COLUMN));
 
-        
+
         return item;
     }
 

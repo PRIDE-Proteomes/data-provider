@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
        http://www.springframework.org/schema/data/jpa
-       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:annotation-config/>
+    <tx:annotation-driven/>
 
     <!--scans through all the jpa repos-->
     <jpa:repositories base-package="uk.ac.ebi.pride.proteomes.db.core.api"
                       entity-manager-factory-ref="proteomesEntityManagerFactory"
                       transaction-manager-ref="proteomesTransactionManager"/>
 
-    <!--Setup data source using place holder properties-->
-    <bean id="proteomesDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${pride.prot.jdbc.driver}"/>
-        <property name="url" value="${pride.prot.jdbc.url}"/>
-        <property name="username" value="${pride.prot.jdbc.user}"/>
-        <property name="password" value="${pride.prot.jdbc.password}"/>
-        <property name="maxActive" value="6"/>
-        <property name="validationQuery" value="select 1 from dual"/>
-        <property name="testWhileIdle" value="true"/>
-    </bean>
+    <jdbc:embedded-database id="proteomesDataSource">
+        <jdbc:script location="${batch.schema.script}" execution="INIT" />
+        <jdbc:script location="classpath:db/hsqldb-config.sql" execution="INIT"/>
+        <!--db-core-hsql-schema-->
+        <jdbc:script location="classpath:db/hsql_schema.sql" execution="INIT"/>
+        <jdbc:script location="classpath:db/proteomes-test-data.sql" execution="INIT"/>
+        <jdbc:script location="${batch.drop.script}" execution="DESTROY" />
+    </jdbc:embedded-database>
 
-    <tx:annotation-driven transaction-manager="proteomesTransactionManager"/>
-
-    <!--pride-loader beans -->
     <bean id="proteomesEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="proteomesDataSource"/>
         <property name="persistenceUnitName" value="pride-proteomes-db-core"/>
         <!--<property name="packagesToScan" value="uk.ac.ebi.pride.proteomes.db.core.api"/>-->
-        <property name="jpaVendorAdapter" >
+        <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="database" value="ORACLE"/>
-                <property name="showSql" value="false"/>
+                <property name="database" value="HSQL"/>
                 <!--to enable details SQL output for debugging-->
+                <property name="showSql" value="false"/>
             </bean>
         </property>
     </bean>
@@ -55,6 +49,7 @@
         <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
     </bean>
 
+
     <bean id="proteomesTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
         <property name="jpaDialect">
@@ -62,8 +57,10 @@
         </property>
     </bean>
 
+
     <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
 
+    <!--Common part: Do we need to move it?-->
     <bean id="jobLauncher"
           class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
         <property name="jobRepository" ref="jobRepository"/>
@@ -83,7 +80,7 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <!--load property files-->
-    <context:property-placeholder location="classpath:prop/pride-proteomes.properties" ignore-unresolvable="true" order="1"/>
+    <context:property-placeholder location="classpath:prop/database-hsql.properties" ignore-unresolvable="true" order="1"/>
 
 
 </beans>

@@ -25,6 +25,10 @@ import static uk.ac.ebi.pride.jmztab.model.MZTabUtils.*;
  * @author qingwei
  * @since 30/01/13
  */
+/*
+    This is an extension of the original class develop for the mzTab. The original couldn't be reused becasue it doesn't
+    support PRIDEMOD as a valid ontology for modifications
+ */
 public class Modification {
     public enum Type {
         MOD,             // PSI-MOD

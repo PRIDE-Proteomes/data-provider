@@ -9,6 +9,9 @@ import uk.ac.ebi.pridemod.ModReader;
 import uk.ac.ebi.pridemod.model.PRIDEModPTM;
 import uk.ac.ebi.pridemod.model.PTM;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static uk.ac.ebi.pride.jmztab.model.MZTabUtils.translateCommaToTab;
@@ -30,7 +33,6 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
 
         //Now they are preinserted in the DB, but it can be uncommented in the future
         if (item.getModifications() != null && !item.getModifications().isEmpty()) {
-            String mappedMods = null;
             String modColumn = item.getModifications();
 
             //Avoids split neutral losses by the comma
@@ -40,26 +42,61 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
             String[] mods = modColumn.split(",");
             assert mods.length > 0;
 
-            mappedMods = mapModifications(mods[0]);
-            if (mappedMods == null || mappedMods.isEmpty()) {
-                log.debug("The provided modification " + mods[0] + " is not mappable");
-                log.debug("The cluster psm " + item.toString() + " will be filtered.");
+            List<Modification> auxList = new ArrayList<Modification>();
 
-                return null;
+            for (String mod : mods) {
+                Modification modification = mapModifications(mod);
+
+                if (modification != null) {
+                    auxList.add(modification);
+                } else {
+                    log.debug("The provided modification " + mod + " is not mappable");
+                    log.debug("The cluster psm " + item.toString() + " will be filtered.");
+
+                    return null;
+                }
             }
 
-            if (mods.length > 1) {
-                for (int i = 1; i < mods.length; i++) {
-                    //We assume that the modifications are sorted by position =
-                    String aux = mapModifications(mods[i]);
-                    if (aux == null || aux.isEmpty()) {
-                        log.debug("The provided modification " + mods[i] + " is not mappable");
-                        log.debug("The cluster psm " + item.toString() + " will be filtered.");
+            //We sort the modifications in the same way (they don't come sorted from mzTab)
+            Collections.sort(auxList, new Comparator<Modification>() {
+                @Override
+                public int compare(Modification o1, Modification o2) {
+                    int aux;
 
-                        return null;
+                    if (o1 != null && o2 != null) {
+                        int sizeMap1 = o1.getPositionMap().size();
+                        int sizeMap2 = o2.getPositionMap().size();
+
+                        //If the modification is ambiguous we are going to use only the first position to sort.
+                        aux = Integer.compare(sizeMap1, sizeMap2);
+                        if (aux == 0) { //We don't have anything to compare if there is no position associated to the mod
+                            if (sizeMap1 != 0 && sizeMap2 != 0) {
+                                aux = o1.getPositionMap().entrySet().iterator().next().getKey().compareTo(o2.getPositionMap().entrySet().iterator().next().getKey());
+                            }
+                        }
+                    } else if (o1 != null) {
+                        aux = -1;
+                    } else if (o2 != null) {
+                        aux = 1;
                     } else {
-                        mappedMods = mappedMods + "," + aux;
+                        aux = 0;
                     }
+
+                    return aux;
+                }
+            });
+
+
+            // We assume that the modifications are sorted by position and
+            // there aren't null values (they are filtered in the insertion)
+            String mappedMods = auxList.get(0).toString();
+            assert mappedMods != null;
+
+            if (auxList.size() > 1) {
+                for (int i = 1; i < auxList.size(); i++) {
+                    String aux = auxList.get(i).toString();
+                    assert aux != null;
+                    mappedMods = mappedMods + "," + aux;
                 }
             }
 
@@ -69,17 +106,16 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
         return item;
     }
 
-
     /**
      * Transform the modification string to a ModificationLocation. It will filtered neutral losses
      *
      * @param mod raw string from the cluster database (like  0-MOD:00394)
      */
-    protected static String mapModifications(String mod) {
+    protected static Modification mapModifications(String mod) {
 
         ModReader modReader = ModReader.getInstance();
 
-        uk.ac.ebi.pride.proteomes.pipeline.mods.Modification mzTabMod = Modification.parseModification(mod);
+        Modification mzTabMod = Modification.parseModification(mod);
 
         if (mzTabMod == null) {
             log.warn("Modification not parseable from the original mzTab: " + mod);
@@ -114,9 +150,8 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
                             return null;
                         }
                     } else if (type.equals(Modification.Type.PRDMOD)) {
-
                         //Modification already map
-                        return mod;
+                        return mzTabMod;
 
                     } else {
                         log.debug("Modification with type: " + type + " cannot be mapped");
@@ -130,7 +165,7 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
                         if (byMassPtm instanceof PRIDEModPTM) {
                             String accValue = byMassPtm.getAccession().split(SPLIT_CHAR)[1];
                             mzTabMod.setAccession(accValue);
-                            mzTabMod.setType(uk.ac.ebi.pride.proteomes.pipeline.mods.Modification.Type.PRDMOD);
+                            mzTabMod.setType(Modification.Type.PRDMOD);
                             log.debug("Mapped modification: " + mzTabMod.toString());
                             count++;
                         }
@@ -147,7 +182,7 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
             }
         }
 
-        return mzTabMod.toString();
+        return mzTabMod;
     }
 
 

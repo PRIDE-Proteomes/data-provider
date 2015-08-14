@@ -48,6 +48,7 @@ public class PeptiformAssayEnricher implements ItemProcessor<Assay, Assay> {
     private AssayService assayService;
 
 
+    //TODO: Improve the caching mechanism
     private HashMap<String, CvParam> enrichedCvs = new HashMap<String, CvParam>();
 
 
@@ -55,15 +56,17 @@ public class PeptiformAssayEnricher implements ItemProcessor<Assay, Assay> {
 
 
         //If we find or not is independent, we are going to enrich it overwriting the previous information
-        if (!proteomesAssayRepository.exists(item.getAssayAccession())) {
-            log.debug("Assay ac: " + item.getAssayAccession() + "exists in the proteomes database");
+        final String assayAccession = item.getAssayAccession();
+
+        if (!proteomesAssayRepository.exists(assayAccession)) {
+            log.debug("Assay ac: " + assayAccession + "exists in the proteomes database");
         }
 
         //We retrieve the information from the Archive
-        AssaySummary archiveAssay = assayService.findByAccession(item.getAssayAccession());
+        AssaySummary archiveAssay = assayService.findByAccession(assayAccession);
 
         assert archiveAssay != null;
-        log.debug("Assay ac: " + item.getAssayAccession());
+        log.debug("Assay ac: " + assayAccession);
 
 
         //Cell Type

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/jpa
+       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+
+    <jpa:repositories base-package="uk.ac.ebi.pride.archive.repo"
+                      entity-manager-factory-ref="archiveEntityManagerFactory"
+                      transaction-manager-ref="archiveTransactionManager"/>
+
+    <context:component-scan base-package="uk.ac.ebi.pride.archive.repo">
+        <context:exclude-filter type="regex" expression=".*WebService.*"/>
+        <context:exclude-filter type="regex" expression=".*Search.*"/>
+    </context:component-scan>
+
+    <!--Setup data source using place holder properties-->
+    <!--<bean id="archiveDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">-->
+        <!--<property name="driverClassName" value="${prider.jdbc.driver}"/>-->
+        <!--<property name="url" value="${prider.jdbc.url}"/>-->
+        <!--<property name="username" value="${prider.jdbc.user}"/>-->
+        <!--<property name="password" value="${prider.jdbc.password}"/>-->
+        <!--<property name="maxActive" value="6"/>-->
+        <!--<property name="validationQuery" value="select 1 from dual"/>-->
+        <!--<property name="testWhileIdle" value="true"/>-->
+    <!--</bean>-->
+    <jdbc:embedded-database id="archiveDataSource">
+        <jdbc:script location="classpath:db/hsqldb-config.sql" execution="INIT"/>
+        <!--db-core-hsql-schema-->
+        <jdbc:script location="classpath:db/schema.sql" execution="INIT"/>
+    </jdbc:embedded-database>
+
+    <tx:annotation-driven transaction-manager="archiveTransactionManager" proxy-target-class="false"/>
+
+    <!--pride-loader beans -->
+    <bean id="archiveEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="archiveDataSource"/>
+        <property name="persistenceUnitName" value="application"/>
+        <property name="packagesToScan" value="uk.ac.ebi.pride.archive.repo"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="HSQL"/>
+                <property name="showSql" value="false"/>
+                <!--to enable details SQL output for debugging-->
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="archiveTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="archiveEntityManagerFactory"/>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <!--load property files-->
+    <context:property-placeholder location="classpath:prop/database-hsql.properties" ignore-unresolvable="true" order="1"/>
+
+</beans>
