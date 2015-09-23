@@ -65,6 +65,26 @@
     <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
 
     <!--Common part: Do we need to move it?-->
+    <!--job operator for restartability -->
+    <bean id="jobOperator" class="org.springframework.batch.core.launch.support.SimpleJobOperator">
+        <property name="jobExplorer" ref="jobExplorer" />
+        <property name="jobRepository" ref="jobRepository" />
+        <property name="jobRegistry" ref="jobRegistry" />
+        <property name="jobLauncher" ref="jobLauncher" />
+    </bean>
+
+    <bean id="incrementer" class="org.springframework.batch.core.launch.support.RunIdIncrementer"/>
+
+    <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.JobExplorerFactoryBean">
+        <property name="dataSource" ref="proteomesDataSource" />
+    </bean>
+
+    <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"/>
+
+    <bean id="jobRegistryBeanPostProcessor" class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+        <property name="jobRegistry" ref="jobRegistry"/>
+    </bean>
+
     <bean id="jobLauncher"
           class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
         <property name="jobRepository" ref="jobRepository"/>
@@ -77,6 +97,12 @@
         <property name="lobHandler" ref="lobHandler"/>
         <property name="isolationLevelForCreate" value="ISOLATION_DEFAULT"/>
     </bean>
+
+    <!--listen to the step execution -->
+    <bean id="stepListener" class="uk.ac.ebi.pride.proteomes.pipeline.listener.StepListener"/>
+
+    <!--listen to the step execution -->
+    <bean id="writeListener" class="uk.ac.ebi.pride.proteomes.pipeline.listener.WriteListener"/>
 
     <bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"/>
 

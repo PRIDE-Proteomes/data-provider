@@ -12,10 +12,11 @@ MEMORY_LIMIT=15000
 JOB_EMAIL="ntoro@ebi.ac.uk"
 # LSF command to run
 COMMAND="-jar ${project.build.finalName}.jar launch-data-provider-job.xml proteomesDataProviderJob -next"
+#COMMAND="-jar ${project.build.finalName}.jar launch-data-provider-job.xml proteomesDataProviderJob"
 
 # OUTPUT
-STD_ERR="proteomes-data-unifier-stderr.txt"
-STD_OUT="proteomes-data-unifier-stdout.txt"
+STD_ERR="output/data-unifier-stderr.txt"
+STD_OUT="output/data-unifier-stdout.txt"
 
 # QUEUE
 QUEUE="production-rh6"

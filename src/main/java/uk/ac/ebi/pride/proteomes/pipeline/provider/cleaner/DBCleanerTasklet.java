@@ -26,58 +26,56 @@ public class DBCleanerTasklet implements Tasklet {
 
 
         int numRows = 0;
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PEP_CV");
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEP_CV");
         logger.info("Num of rows deleted from PEP_CV: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PROT_CV");
-        logger.info("Num of rows deleted PROT_CV: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PROT_CV");
+        logger.info("Num of rows deleted from PROT_CV: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.ASSAY_CV");
-        logger.info("Num of rows deleted ASSAY_CV: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.ASSAY_CV");
+        logger.info("Num of rows deleted from ASSAY_CV: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PEP_ASSAY");
-        logger.info("Num of rows deleted PEP_ASSAY: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEP_ASSAY");
+        logger.info("Num of rows deleted from PEP_ASSAY: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PEP_CLUSTER");
-        logger.info("Num of rows deleted PEP_CLUSTER: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEP_CLUSTER");
+        logger.info("Num of rows deleted from PEP_CLUSTER: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PEP_MOD");
-        logger.info("Num of rows deleted PEP_MOD: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEP_MOD");
+        logger.info("Num of rows deleted from PEP_MOD: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PROT_MOD");
-        logger.info("Num of rows deleted PROT_MOD: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PROT_MOD");
+        logger.info("Num of rows deleted from PROT_MOD: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PEP_PROT");
-        logger.info("Num of rows deleted PEP_PROT: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEP_PROT");
+        logger.info("Num of rows deleted from PEP_PROT: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PROT_GROUP");
-        logger.info("Num of rows deleted PROT_GROUP: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PROT_PGRP");
+        logger.info("Num of rows deleted from PROT_PGRP: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.PROT_PGRP");
-        logger.info("Num of rows deleted PROT_PGRP: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PROT_GROUP");
+        logger.info("Num of rows deleted from PROT_GROUP: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.FEATURE");
-        logger.info("Num of rows deleted FEATURE: " + numRows);
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.FEATURE");
+        logger.info("Num of rows deleted from FEATURE: " + numRows);
 
-        numRows = jdbcTemplate.update("TRUNCATE TABLE PRIDEPROT.CLUSTER_PSM");
-        logger.info("Num of rows deleted CLUSTER_PSM: " + numRows);
-
-        /* Delete doesn't need to disable the fk_constrains but it is slower than Truncate (truncate can not be rollback) */
+        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.CLUSTER_PSM");
+        logger.info("Num of rows deleted from CLUSTER_PSM: " + numRows);
 
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PROTEIN");
-        logger.info("Num of rows deleted PROTEIN: " + numRows);
+        logger.info("Num of rows deleted from PROTEIN: " + numRows);
 
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PEPTIDE");
-        logger.info("Num of rows deleted PEPTIDE: " + numRows);
+        logger.info("Num of rows deleted from PEPTIDE: " + numRows);
 
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.PRIDE_CLUSTER");
-        logger.info("Num of rows deleted PRIDE_CLUSTER: " + numRows);
+        logger.info("Num of rows deleted from PRIDE_CLUSTER: " + numRows);
 
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.ASSAY");
-        logger.info("Num of rows deleted ASSAY: " + numRows);
+        logger.info("Num of rows deleted from ASSAY: " + numRows);
 
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.CV_PARAM");
-        logger.info("Num of rows deleted CV_PARAM: " + numRows);
+        logger.info("Num of rows deleted from CV_PARAM: " + numRows);
 
         return RepeatStatus.FINISHED;
     }
