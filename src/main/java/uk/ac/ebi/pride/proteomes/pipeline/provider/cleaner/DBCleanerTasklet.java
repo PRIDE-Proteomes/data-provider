@@ -74,8 +74,9 @@ public class DBCleanerTasklet implements Tasklet {
         numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.ASSAY");
         logger.info("Num of rows deleted from ASSAY: " + numRows);
 
-        numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.CV_PARAM");
-        logger.info("Num of rows deleted from CV_PARAM: " + numRows);
+        //If uncommented deletes the Feature cv params and need to be inserted manually
+        //numRows = jdbcTemplate.update("DELETE FROM PRIDEPROT.CV_PARAM");
+        //logger.info("Num of rows deleted from CV_PARAM: " + numRows);
 
         return RepeatStatus.FINISHED;
     }
