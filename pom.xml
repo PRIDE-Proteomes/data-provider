@@ -13,6 +13,7 @@
     <groupId>uk.ac.ebi.pride.proteomes.pipeline</groupId>
     <artifactId>data-provider-pipeline</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <name>PRIDE Proteomes Data Provider Pipeline</name>
 
     <!--
         mvn profiles:
