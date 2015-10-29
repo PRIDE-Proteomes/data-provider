@@ -46,8 +46,8 @@
         <property name="keyName" value="CLUSTER_ENVIRONMENT"/>
     </bean>
 
-    <bean id="placeholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="clusterEnvironment">
-        <property name="location" value="classpath:prop/pride-cluster-${CLUSTER_ENVIRONMENT}.properties"/>
+    <bean id="clusterPlaceholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="clusterEnvironment">
+        <property name="locations" value="classpath:prop/cluster/pride-cluster-${CLUSTER_ENVIRONMENT}.properties"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="order" value="1"/>
     </bean>

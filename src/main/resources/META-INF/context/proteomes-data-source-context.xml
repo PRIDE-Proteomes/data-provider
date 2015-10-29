@@ -117,8 +117,8 @@
         <property name="keyName" value="PROTEOMES_ENVIRONMENT"/>
     </bean>
 
-    <bean id="placeholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="proteomesEnvironment">
-        <property name="location" value="classpath:prop/pride-proteomes-${PROTEOMES_ENVIRONMENT}.properties"/>
+    <bean id="proteomesPlaceholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="proteomesEnvironment">
+        <property name="locations" value="classpath:prop/proteomes/pride-proteomes-${PROTEOMES_ENVIRONMENT}.properties"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="order" value="1"/>
     </bean>

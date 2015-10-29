@@ -31,7 +31,7 @@ printUsage() {
     echo ""
     echo "Usage: ./runDataProvider.sh [-e|--email] "
 
-    echo "     Example: ./runDataProvider.sh -e ntoro@ebi.ac.uk -p test -c prod -j run.id(long)=4"
+    echo "     Example: ./runDataProvider.sh -e ntoro@ebi.ac.uk -p test -c prod"
     echo "     (required) proteomes: Proteomes database environment -> prod | dev | test"
     echo "     (required) cluster:  Cluster database environment -> prod | dev | test"
     echo "     (optional) email: Email to send LSF notification"
@@ -60,7 +60,6 @@ while [ "$1" != "" ]; do
         JOB_PARAMETERS=$1
         ;;
     esac
-    esac
     shift
 done
 
@@ -68,6 +67,7 @@ done
 ##### CHECK the provided arguments
 if [ -z ${CLUSTER_ENV} ]; then
          echo "Need to enter a valid cluster environment"
+         echo ""
          printUsage
          exit 1
 else
@@ -90,6 +90,7 @@ fi
 
 if [ -z ${PROTEOMES_ENV} ]; then
          echo "Need to enter a valid proteomes environment"
+         echo ""
          printUsage
          exit 1
 else
