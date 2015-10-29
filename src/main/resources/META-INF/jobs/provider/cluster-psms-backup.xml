@@ -3,31 +3,72 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <!-- Oracle Query after the ctas is added
-        select  sequence,
-            mods,
-            taxid,
-            assay_accession,
-            project_accession,
-            cluster_id
-        from
-            proteomes;
-        -->
+    <!--<bean id="psmClusterReader" scope="step"-->
+          <!--class="org.springframework.batch.item.database.JdbcCursorItemReader">-->
+        <!--&lt;!&ndash;to-do change to a normal query to cluster when the pipeline is working&ndash;&gt;-->
+        <!--<property name="dataSource" ref="proteomesDataSource"/>-->
+        <!--&lt;!&ndash;<property name="dataSource" ref="clusterDataSource"/>&ndash;&gt;-->
+        <!--<property name="sql">-->
+            <!--<value>-->
+                <!--select-->
+                    <!--sequence,-->
+                    <!--mods,-->
+                    <!--taxid,-->
+                    <!--assay_accession,-->
+                    <!--project_accession,-->
+                    <!--cluster_id-->
+                <!--from-->
+                    <!--proteomes-->
+            <!--</value>-->
+        <!--</property>-->
+        <!--<property name="rowMapper">-->
+            <!--<bean class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.mapper.PsmsClusterRowMapper"/>-->
+        <!--</property>-->
+        <!--<property name="fetchSize" value="10000"/>-->
+    <!--</bean>-->
+
+     <!--version without the ctas, we write directly to the table -->
     <bean id="psmClusterReader" scope="step"
           class="org.springframework.batch.item.database.JdbcCursorItemReader">
-        <!--to-do change to a normal query to cluster when the pipeline is working-->
-        <property name="dataSource" ref="proteomesDataSource"/>
+        <property name="dataSource" ref="clusterDataSource"/>
         <property name="sql">
             <value>
-                select
-                    sequence,
-                    mods,
-                    taxid,
-                    assay_accession,
-                    project_accession,
-                    cluster_id
-                from
-                    proteomes
+                SELECT
+                UNIQUE
+                    PSM.SEQUENCE SEQUENCE,
+                    PSM.MODIFICATIONS MODS,
+                    ASSAY.TAXID TAXID,
+                    ASSAY.ASSAY_ACCESSION ASSAY_ACCESSION,
+                    ASSAY.PROJECT_ACCESSION PROJECT_ACCESSION,
+                    SPECTRUM_CLUSTER.CLUSTER_PK CLUSTER_ID
+                FROM
+                    (SELECT
+                        CLUSTER_PK
+                    FROM
+                        PRIDECLUS.SPECTRUM_CLUSTER
+                    WHERE SPECTRUM_CLUSTER.QUALITY = 1) SPECTRUM_CLUSTER,
+                    (SELECT
+                        RANK,
+                        CLUSTER_FK,
+                        PSM_FK
+                    FROM
+                        PRIDECLUS.CLUSTER_HAS_PSM
+                    WHERE
+                        CLUSTER_HAS_PSM.RANK = 1.1) CLUSTER_HAS_PSM,
+                    PRIDECLUS.PSM PSM,
+                    (SELECT
+                        ASSAY.ASSAY_PK,
+                        ASSAY.TAXONOMY_ID TAXID,
+                        ASSAY.ASSAY_ACCESSION ASSAY_ACCESSION,
+                        ASSAY.PROJECT_ACCESSION PROJECT_ACCESSION
+                    FROM
+                        PRIDECLUS.ASSAY
+                    WHERE
+                        ASSAY.MULTI_SPECIES = 0 AND ASSAY.TAXONOMY_ID IN ('9606','10090','3702','10116')) ASSAY
+                WHERE
+                    SPECTRUM_CLUSTER.CLUSTER_PK = CLUSTER_HAS_PSM.CLUSTER_FK
+                    AND CLUSTER_HAS_PSM.PSM_FK  = PSM.PSM_PK
+                    AND PSM.ASSAY_FK            = ASSAY.ASSAY_PK
             </value>
         </property>
         <property name="rowMapper">
