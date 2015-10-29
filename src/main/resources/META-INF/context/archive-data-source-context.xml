@@ -63,6 +63,6 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
     <!--load property files-->
-    <context:property-placeholder location="classpath:prop/pride-repo.properties" ignore-unresolvable="true" order="1"/>
+    <context:property-placeholder location="classpath:prop/archive/pride-archive-prod.properties" ignore-unresolvable="true" order="1"/>
 
 </beans>
