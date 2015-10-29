@@ -18,27 +18,6 @@
         <constructor-arg ref="clusterDataSource"/>
     </bean>
 
-    <!--&lt;!&ndash;Setup data source using place holder properties&ndash;&gt;-->
-    <!--<bean id="clusterDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">-->
-    <!--<property name="driverClassName" value="${pridec.jdbc.driver}"/>-->
-    <!--<property name="url" value="${pridec.jdbc.url}"/>-->
-    <!--<property name="username" value="${pridec.jdbc.user}"/>-->
-    <!--<property name="password" value="${pridec.jdbc.password}"/>-->
-    <!--<property name="maxActive" value="50"/>-->
-    <!--<property name="maxIdle" value="25"/>-->
-    <!--<property name="minIdle" value="1"/>-->
-    <!--<property name="initialSize" value="1"/>-->
-    <!--<property name="minEvictableIdleTimeMillis" value="60000"/>-->
-    <!--<property name="timeBetweenEvictionRunsMillis" value="60000"/>-->
-    <!--<property name="numTestsPerEvictionRun" value="3"/>-->
-    <!--<property name="maxWait" value="10000"/>-->
-    <!--<property name="testOnBorrow" value="true"/>-->
-    <!--<property name="testWhileIdle" value="true"/>-->
-    <!--<property name="testOnReturn" value="false"/>-->
-    <!--<property name="validationQuery" value="SELECT 1 FROM dual"/>-->
-    <!--&lt;!&ndash; Oracle validation query &ndash;&gt;-->
-    <!--</bean>-->
-
     <jdbc:embedded-database id="clusterDataSource">
         <jdbc:script location="classpath:db/hsqldb-config.sql" execution="INIT"/>
         <!--db-core-hsql-schema-->
@@ -51,9 +30,5 @@
           lazy-init="true">
         <property name="dataSource" ref="clusterDataSource"/>
     </bean>
-
-    <!--load property files-->
-    <context:property-placeholder location="classpath:prop/pride-cluster.properties" ignore-unresolvable="true"
-                                  order="1"/>
 
 </beans>

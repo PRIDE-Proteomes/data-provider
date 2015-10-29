@@ -5,9 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemProcessor;
 import uk.ac.ebi.pride.proteomes.db.core.api.cluster.ClusterPsm;
 import uk.ac.ebi.pride.proteomes.pipeline.mods.Modification;
-import uk.ac.ebi.pridemod.ModReader;
-import uk.ac.ebi.pridemod.model.PRIDEModPTM;
-import uk.ac.ebi.pridemod.model.PTM;
+import uk.ac.ebi.pride.utilities.pridemod.ModReader;
+import uk.ac.ebi.pride.utilities.pridemod.model.PRIDEModPTM;
+import uk.ac.ebi.pride.utilities.pridemod.model.PTM;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,8 +30,6 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
 
     public ClusterPsm process(ClusterPsm item) throws Exception {
 
-
-        //Now they are preinserted in the DB, but it can be uncommented in the future
         if (item.getModifications() != null && !item.getModifications().isEmpty()) {
             String modColumn = item.getModifications();
 
@@ -184,6 +182,5 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
 
         return mzTabMod;
     }
-
 
 }

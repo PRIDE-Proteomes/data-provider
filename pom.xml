@@ -30,7 +30,8 @@
         <spring.data.jpa.version>1.6.5.RELEASE</spring.data.jpa.version>
         <hibernate.version>4.3.6.Final</hibernate.version>
         <hibernate.validator>4.3.0.Final</hibernate.validator>
-        <proteomes.db.core.version>1.0.2</proteomes.db.core.version>
+
+        <proteomes.db.core.version>1.0.3-SNAPSHOT</proteomes.db.core.version>
         <querydsl.version>3.6.2</querydsl.version>
         <archive.repo.version>0.1.19</archive.repo.version>
         <spectra.cluster.repo.version>1.0.1-SNAPSHOT</spectra.cluster.repo.version>

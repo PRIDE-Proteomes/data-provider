@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/data/jpa
-       http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
     <bean class="uk.ac.ebi.pride.spectracluster.repo.dao.ClusterReader" id="clusterReaderDao">
@@ -45,7 +39,17 @@
         <property name="dataSource" ref="clusterDataSource"/>
     </bean>
 
-    <!--load property files-->
-    <context:property-placeholder location="classpath:prop/pride-cluster.properties" ignore-unresolvable="true" order="1"/>
+    <!-- Set up or detect a System property called "CLUSTER_ENVIRONMENT" used to construct a properties file on the classpath.  The default is "hsql".  -->
+    <bean id="clusterEnvironment"
+          class="org.springframework.batch.support.SystemPropertyInitializer">
+        <property name="defaultValue" value="test"/>
+        <property name="keyName" value="CLUSTER_ENVIRONMENT"/>
+    </bean>
+
+    <bean id="placeholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="clusterEnvironment">
+        <property name="location" value="classpath:prop/pride-cluster-${CLUSTER_ENVIRONMENT}.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="order" value="1"/>
+    </bean>
 
 </beans>

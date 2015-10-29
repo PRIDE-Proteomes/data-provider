@@ -109,8 +109,18 @@
     <!-- bean post-processor for JPA annotations -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
-    <!--load property files-->
-    <context:property-placeholder location="classpath:prop/pride-proteomes.properties" ignore-unresolvable="true" order="1"/>
+    <!-- Set up or detect a System property called "PROTEOMES_ENVIRONMENT" used to construct a properties file on the classpath.  The default is "test".  -->
+    <!-- See scripts to have a look how to use this environment -->
+    <bean id="proteomesEnvironment"
+          class="org.springframework.batch.support.SystemPropertyInitializer">
+        <property name="defaultValue" value="test"/>
+        <property name="keyName" value="PROTEOMES_ENVIRONMENT"/>
+    </bean>
 
+    <bean id="placeholderProperties" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" depends-on="proteomesEnvironment">
+        <property name="location" value="classpath:prop/pride-proteomes-${PROTEOMES_ENVIRONMENT}.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="order" value="1"/>
+    </bean>
 
 </beans>
