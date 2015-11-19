@@ -37,7 +37,7 @@
     <bean id="proteomesEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="proteomesDataSource"/>
         <property name="persistenceUnitName" value="pride-proteomes-db-core"/>
-        <!--<property name="packagesToScan" value="uk.ac.ebi.pride.proteomes.db.core.api"/>-->
+        <property name="jpaDialect" ref="jpaDialet"/>
         <property name="jpaVendorAdapter" >
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="database" value="ORACLE"/>
@@ -45,7 +45,22 @@
                 <!--to enable details SQL output for debugging-->
             </bean>
         </property>
+        <!-- without these properties the PeptiforAssayPropagator throws LazyInitializationException and/or
+          multiple representations of the same entity are being merged. It is a risk, but we couldn't find other way
+          without the need to do the eager fetching in the database service layer. The eager fetching it is not an option because
+          slows the respense time of the web -->
+        <!-- Review the problem in the future if we see inconsistency inside the data. Foe example using jdbc to fetch the primary key of the ids
+         to open the session-->
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <prop key="hibernate.event.merge.entity_copy_observer">allow</prop>
+            </props>
+        </property>
     </bean>
+
+    <bean id="jpaDialet" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
 
     <bean id="peptideRepositoryImpl" class="uk.ac.ebi.pride.proteomes.db.core.api.peptide.PeptideRepositoryImpl">
         <property name="entityManagerFactory" ref="proteomesEntityManagerFactory"/>
