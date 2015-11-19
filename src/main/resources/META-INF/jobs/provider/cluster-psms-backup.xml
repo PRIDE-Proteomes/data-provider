@@ -3,38 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <!--<bean id="psmClusterReader" scope="step"-->
-          <!--class="org.springframework.batch.item.database.JdbcCursorItemReader">-->
-        <!--&lt;!&ndash;to-do change to a normal query to cluster when the pipeline is working&ndash;&gt;-->
-        <!--<property name="dataSource" ref="proteomesDataSource"/>-->
-        <!--&lt;!&ndash;<property name="dataSource" ref="clusterDataSource"/>&ndash;&gt;-->
-        <!--<property name="sql">-->
-            <!--<value>-->
-                <!--select-->
-                    <!--sequence,-->
-                    <!--mods,-->
-                    <!--taxid,-->
-                    <!--assay_accession,-->
-                    <!--project_accession,-->
-                    <!--cluster_id-->
-                <!--from-->
-                    <!--proteomes-->
-            <!--</value>-->
-        <!--</property>-->
-        <!--<property name="rowMapper">-->
-            <!--<bean class="uk.ac.ebi.pride.proteomes.pipeline.provider.generator.mapper.PsmsClusterRowMapper"/>-->
-        <!--</property>-->
-        <!--<property name="fetchSize" value="10000"/>-->
-    <!--</bean>-->
-
-     <!--version without the ctas, we write directly to the table -->
+     <!--version without the ctas, we read directly from the table -->
     <bean id="psmClusterReader" scope="step"
           class="org.springframework.batch.item.database.JdbcCursorItemReader">
         <property name="dataSource" ref="clusterDataSource"/>
         <property name="sql">
             <value>
                 SELECT
-                UNIQUE
+                    UNIQUE
                     PSM.SEQUENCE SEQUENCE,
                     PSM.MODIFICATIONS MODS,
                     ASSAY.TAXID TAXID,
