@@ -19,8 +19,8 @@ CLUSTER_ENV=""
 PROTEOMES_ENV=""
 
 # OUTPUT
-STD_ERR="output/data-unifier-stderr.txt"
-STD_OUT="output/data-unifier-stdout.txt"
+STD_ERR="output/data-provider-stderr.txt"
+STD_OUT="output/data-provider-stdout.txt"
 
 # QUEUE
 QUEUE="production-rh6"
