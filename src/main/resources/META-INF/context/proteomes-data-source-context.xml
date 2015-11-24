@@ -37,12 +37,13 @@
     <bean id="proteomesEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="proteomesDataSource"/>
         <property name="persistenceUnitName" value="pride-proteomes-db-core"/>
+        <!--TODO Is this redundant?-->
         <property name="jpaDialect" ref="jpaDialet"/>
         <property name="jpaVendorAdapter" >
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="database" value="ORACLE"/>
-                <property name="showSql" value="false"/>
                 <!--to enable details SQL output for debugging-->
+                <property name="showSql" value="false"/>
             </bean>
         </property>
         <!-- without these properties the PeptiforAssayPropagator throws LazyInitializationException and/or
