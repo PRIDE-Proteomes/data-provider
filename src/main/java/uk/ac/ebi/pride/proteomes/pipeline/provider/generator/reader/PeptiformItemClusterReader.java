@@ -31,7 +31,7 @@ public class PeptiformItemClusterReader implements ItemStreamReader<Peptiform>, 
 
     // We assume for this reader that the records are sorted by sequence, so when de sequence + mods + species are different we create a new
     // Peptiform and released the previous one
-    public Peptiform read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+    public Peptiform read() throws Exception, ParseException, NonTransientResourceException {
 
         //First element
         Peptiform aux = null;

@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent> <!-- parent POM -->
-        <groupId>uk.ac.ebi.pride.maven</groupId>
-        <artifactId>pride-base-master</artifactId>
-        <version>1.0.3</version>
+        <groupId>uk.ac.ebi.pride.proteomes.maven</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>uk.ac.ebi.pride.proteomes.pipeline</groupId>
@@ -17,22 +17,19 @@
 
     <!--
         mvn profiles:
-            proteomes-data-provider
-
+            pride-proteomes
     -->
 
-    <properties>
-        <!-- UTF-8 encoding to generate the build-->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.version>4.0.9.RELEASE</spring.version>
-        <spring.batch.version>2.2.7.RELEASE</spring.batch.version>
-        <spring.data.jpa.version>1.6.5.RELEASE</spring.data.jpa.version>
-        <hibernate.version>4.3.6.Final</hibernate.version>
-        <hibernate.validator>4.3.0.Final</hibernate.validator>
+    <!--scm git config-->
+    <scm>
+        <connection>scm:git:github.com/PRIDE-Proteomes/db-core.git</connection>
+        <developerConnection>scm:git:git@github.com:PRIDE-Proteomes/db-core.git</developerConnection>
+        <url>https://github.com/PRIDE-Proteomes/db-core.git</url>
+        <tag>HEAD</tag>
+    </scm>
 
+    <properties>
         <proteomes.db.core.version>1.0.3-SNAPSHOT</proteomes.db.core.version>
-        <querydsl.version>3.6.2</querydsl.version>
         <archive.repo.version>0.1.19</archive.repo.version>
         <spectra.cluster.repo.version>1.0.1-SNAPSHOT</spectra.cluster.repo.version>
         <index.utils.version>0.1.2-SNAPSHOT</index.utils.version>
@@ -46,21 +43,10 @@
             </resource>
         </resources>
         <plugins>
-            <!--compiler-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-                <version>3.2</version>
-            </plugin>
             <!-- maven dependency plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -82,19 +68,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <!--NOTE: you must have this version number, otherwise, the build will not be able to find Validator-->
-                <version>2.4</version>
                 <configuration>
                     <excludes>
                         <exclude>**/test</exclude>
                         <exclude>**/test/*.class</exclude>
                     </excludes>
                     <archive>
-                        <!--<manifest>-->
-                            <!--<mainClass>uk.ac.ebi.pride.proteomes.pipeline.DataProviderApp</mainClass>-->
-                            <!--<addClasspath>true</addClasspath>-->
-                            <!--<classpathPrefix>lib</classpathPrefix>-->
-                            <!--<useUniqueVersions>false</useUniqueVersions>-->
-                        <!--</manifest>-->
                         <manifest>
                             <mainClass>org.springframework.batch.core.launch.support.CommandLineJobRunner</mainClass>
                             <addClasspath>true</addClasspath>
@@ -108,7 +87,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
@@ -127,7 +105,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
         <dependency>
@@ -148,6 +125,13 @@
             </exclusions>
         </dependency>
 
+        <!-- pride proteomes -->
+        <dependency>
+            <groupId>uk.ac.ebi.pride.proteomes.db</groupId>
+            <artifactId>db-core</artifactId>
+            <version>${proteomes.db.core.version}</version>
+        </dependency>
+
         <!-- pride repo -->
         <dependency>
             <groupId>uk.ac.ebi.pride.archive</groupId>
@@ -163,13 +147,6 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- pride proteomes -->
-        <dependency>
-            <groupId>uk.ac.ebi.pride.proteomes.db</groupId>
-            <artifactId>db-core</artifactId>
-            <version>${proteomes.db.core.version}</version>
         </dependency>
 
         <!-- pride cluster -->
@@ -227,50 +204,5 @@
         </dependency>
 
     </dependencies>
-
-    <repositories>
-
-        <!-- repositories inherited from parent
-             (only need repository for the parent itself and anything that is not in the parent) -->
-        <!-- EBI repo -->
-        <repository>
-            <id>nexus-ebi-repo-old</id>
-            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/</url>
-        </repository>
-        <repository>
-            <id>nexus-ebi-release-repo</id>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-        </repository>
-        <repository>
-            <id>nexus-ebi-snapshot-repo</id>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
-        </repository>
-
-    </repositories>
-
-    <!--scm git config-->
-    <scm>
-        <connection>scm:git:github.com/PRIDE-Proteomes/db-core.git</connection>
-        <developerConnection>scm:git:git@github.com:PRIDE-Proteomes/db-core.git</developerConnection>
-        <url>https://github.com/PRIDE-Proteomes/db-core.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <!-- Overwrites the previous repositories-->
-    <distributionManagement>
-        <!-- EBI repo -->
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
