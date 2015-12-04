@@ -6,19 +6,42 @@
 
     <parent> <!-- parent POM -->
         <groupId>uk.ac.ebi.pride.proteomes.maven</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0.1</version>
+        <artifactId>proteomes-maven-parent</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>uk.ac.ebi.pride.proteomes.pipeline</groupId>
-    <artifactId>data-provider-pipeline</artifactId>
+    <artifactId>proteomes-pipeline-data-provider</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+
     <name>PRIDE Proteomes Data Provider Pipeline</name>
 
     <!--
-        mvn profiles:
+        To build and run the project maven profiles are needed:
             pride-proteomes
     -->
+
+    <developers>
+        <developer>
+            <name>PRIDE Developer</name>
+            <id>pride-support@ebi.ac.uk</id>
+            <email>pride-support@ebi.ac.uk</email>
+            <organization>Proteomics Services Team, EMBL - European Bioinformatics Institute</organization>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>EMBL - European Bioinformatics Institute</name>
+        <url>http://www.ebi.ac.uk</url>
+    </organization>
 
     <!--scm git config-->
     <scm>
@@ -29,7 +52,7 @@
     </scm>
 
     <properties>
-        <proteomes.db.core.version>1.0.3-SNAPSHOT</proteomes.db.core.version>
+        <proteomes.db.core.version>1.0.0</proteomes.db.core.version>
         <archive.repo.version>0.1.19</archive.repo.version>
         <spectra.cluster.repo.version>1.0.1-SNAPSHOT</spectra.cluster.repo.version>
         <index.utils.version>0.1.2-SNAPSHOT</index.utils.version>
@@ -128,7 +151,7 @@
         <!-- pride proteomes -->
         <dependency>
             <groupId>uk.ac.ebi.pride.proteomes.db</groupId>
-            <artifactId>db-core</artifactId>
+            <artifactId>proteomes-db-core</artifactId>
             <version>${proteomes.db.core.version}</version>
         </dependency>
 
