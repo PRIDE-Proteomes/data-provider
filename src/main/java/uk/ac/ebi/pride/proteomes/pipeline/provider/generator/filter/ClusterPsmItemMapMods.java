@@ -5,9 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemProcessor;
 import uk.ac.ebi.pride.proteomes.db.core.api.cluster.ClusterPsm;
 import uk.ac.ebi.pride.proteomes.pipeline.mods.Modification;
-import uk.ac.ebi.pridemod.ModReader;
-import uk.ac.ebi.pridemod.model.PRIDEModPTM;
-import uk.ac.ebi.pridemod.model.PTM;
+import uk.ac.ebi.pride.utilities.pridemod.ModReader;
+import uk.ac.ebi.pride.utilities.pridemod.model.PRIDEModPTM;
+import uk.ac.ebi.pride.utilities.pridemod.model.PTM;
 
 import java.util.ArrayList;
 import java.util.Collections;

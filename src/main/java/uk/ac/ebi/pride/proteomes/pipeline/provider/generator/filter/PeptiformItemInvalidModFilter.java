@@ -7,9 +7,9 @@ import uk.ac.ebi.pride.proteomes.db.core.api.modification.Modification;
 import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationLocation;
 import uk.ac.ebi.pride.proteomes.db.core.api.modification.ModificationProteomesRepository;
 import uk.ac.ebi.pride.proteomes.db.core.api.peptide.Peptiform;
-import uk.ac.ebi.pridemod.ModReader;
-import uk.ac.ebi.pridemod.model.PRIDEModPTM;
-import uk.ac.ebi.pridemod.model.PTM;
+import uk.ac.ebi.pride.utilities.pridemod.ModReader;
+import uk.ac.ebi.pride.utilities.pridemod.model.PRIDEModPTM;
+import uk.ac.ebi.pride.utilities.pridemod.model.PTM;
 
 import javax.annotation.Resource;
 
