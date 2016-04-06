@@ -52,7 +52,6 @@ public class ClusterPsmItemMapModsTest {
         ClusterPsm other = itemProcessor.process(item);
 
 
-        //As Q8NEZ4 doesn't have any feature the item returned is null to avoid write it again in the db becasue there is no new information
         Assert.assertNotNull(other);
         Assert.assertEquals("ELPGHTGYLSCCR", other.getSequence());
         Assert.assertEquals("11-PRDMOD:5,12-PRDMOD:5", other.getModifications());

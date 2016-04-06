@@ -183,4 +183,84 @@ public class ClusterPsmItemMapMods implements ItemProcessor<ClusterPsm, ClusterP
         return mzTabMod;
     }
 
+//NOTE: Version using anchor protein. It cannot be used because Unimod doesn't contain information about if the modification is biological relevant or not
+//    /**
+//     * Transform the modification string to a ModificationLocation. It will filtered neutral losses
+//     *
+//     * @param mod raw string from the cluster database (like  0-MOD:00394)
+//     */
+//    protected static Modification mapModifications(String mod) {
+//
+//        ModReader modReader = ModReader.getInstance();
+//
+//        Modification mzTabMod = Modification.parseModification(mod);
+//
+//        if (mzTabMod == null) {
+//            log.warn("Modification not parseable from the original mzTab: " + mod);
+//            return null;
+//        } else {
+//            if (mzTabMod.getNeutralLoss() != null) {
+//                log.warn("The modification contains a neutral loss: " + mzTabMod.getNeutralLoss() + ". It will be ignored.");
+//                return null;
+//
+//            } else {
+//                Modification.Type type = mzTabMod.getType();
+//
+//                if (!type.equals(Modification.Type.NEUTRAL_LOSS)) {
+//
+//                    List<PTM> ptms;
+//                    String accession;
+//
+//                    if (type.equals(Modification.Type.PRDMOD)) {
+//                        //Modification already map
+//                        return mzTabMod;
+//
+//                    } else if (type.equals(Modification.Type.MOD) || type.equals(Modification.Type.UNIMOD)) {
+//
+//                        accession = mzTabMod.getType() + SPLIT_CHAR + mzTabMod.getAccession();
+//                        ptms = modReader.getAnchorModification(accession);
+//
+//                    } else if (type.equals(Modification.Type.CHEMMOD)) {
+//                        try {
+//                            accession = mzTabMod.getAccession();
+//                            Double delta = Double.parseDouble(accession);
+//                            //We remap the modifications to PRIDE Mod
+//                            ptms = modReader.getAnchorMassModification(delta, null);
+//
+//                        } catch (NumberFormatException e) {
+//                            log.debug("Exception converting CHEMMOD: ", e.getCause());
+//                            return null;
+//                        }
+//                    } else {
+//                        log.debug("Modification with type: " + type + " cannot be mapped");
+//                        return null;
+//                    }
+//
+//                    int count = 0;
+//                    for (PTM ptm : ptms) {   //If more than one we overwrite
+//                        if (ptm instanceof UniModPTM) {
+//                            String accValue = ptm.getAccession().split(SPLIT_CHAR)[1];
+//                            mzTabMod.setAccession(accValue);
+//                            mzTabMod.setType(Modification.Type.PRDMOD);
+//                            log.debug("Mapped modification: " + mzTabMod.toString());
+//                            count++;
+//                        }
+//                    }
+//
+//                    if ( ptms.isEmpty()) {
+//                        log.debug("The provided modification " + accession + " cannot be remmap to Unimod ontology.");
+//                        return null;
+//                    }
+//                    if (ptms.size() > 1) {
+//                        log.debug("The provided modification " + accession + " maps to more that one term in Unimod. Only the last one is taken into account.");
+//                        return null;
+//                    }
+//
+//
+//                }
+//            }
+//        }
+//
+//        return mzTabMod;
+//    }
 }
