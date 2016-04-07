@@ -40,7 +40,7 @@
                     FROM
                         PRIDECLUS.ASSAY
                     WHERE
-                        ASSAY.MULTI_SPECIES = 0 AND ASSAY.TAXONOMY_ID IN ('9606','10090','3702','10116')) ASSAY
+                        ASSAY.MULTI_SPECIES = 0) ASSAY
                 WHERE
                     SPECTRUM_CLUSTER.CLUSTER_PK = CLUSTER_HAS_PSM.CLUSTER_FK
                     AND CLUSTER_HAS_PSM.PSM_FK  = PSM.PSM_PK

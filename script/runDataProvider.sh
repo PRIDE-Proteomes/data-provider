@@ -113,4 +113,4 @@ fi
 
 ##### RUN it on the production LSF cluster #####
 ##### NOTE: you can change LSF group to modify the number of jobs can be run concurrently #####
-bsub  -q ${QUEUE} -e ${STD_ERR} -o ${STD_OUT} -M ${MEMORY_LIMIT} -q production-rh6 -J ${JOB_NAME} -N -u ${JOB_EMAIL} java -Xmx${MEMORY_LIMIT}m -DCLUSTER_ENVIRONMENT=${CLUSTER_ENV} -DPROTEOMES_ENVIRONMENT=${PROTEOMES_ENV} ${COMMAND} ${JOB_PARAMETERS}
+bsub  -q ${QUEUE} -e ${STD_ERR} -o ${STD_OUT} -M ${MEMORY_LIMIT} -q production-rh6 -J ${JOB_NAME} -N -u ${JOB_EMAIL} /nfs/pride/work/java/jdk1.8.0_65/bin/java -Xmx${MEMORY_LIMIT}m -DCLUSTER_ENVIRONMENT=${CLUSTER_ENV} -DPROTEOMES_ENVIRONMENT=${PROTEOMES_ENV} ${COMMAND} ${JOB_PARAMETERS}
