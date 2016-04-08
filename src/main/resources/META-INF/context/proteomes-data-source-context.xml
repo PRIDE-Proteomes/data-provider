@@ -44,12 +44,13 @@
                 <property name="database" value="ORACLE"/>
                 <!--to enable details SQL output for debugging-->
                 <property name="showSql" value="false"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.Oracle10gDialect" />
             </bean>
         </property>
         <!-- without these properties the PeptiforAssayPropagator throws LazyInitializationException and/or
           multiple representations of the same entity are being merged. It is a risk, but we couldn't find other way
           without the need to do the eager fetching in the database service layer. The eager fetching it is not an option because
-          slows the respense time of the web -->
+          slows the response time of the web -->
         <!-- Review the problem in the future if we see inconsistency inside the data. Foe example using jdbc to fetch the primary key of the ids
          to open the session-->
 
@@ -78,7 +79,7 @@
         </property>
     </bean>
 
-    <bean class="org.springframework.orm.hibernate4.HibernateExceptionTranslator"/>
+    <bean class="org.springframework.orm.hibernate5.HibernateExceptionTranslator"/>
 
     <!--Common part: Do we need to move it?-->
     <!--job operator for restartability -->

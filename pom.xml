@@ -55,7 +55,7 @@
         <proteomes.db.core.version>1.0.1-SNAPSHOT</proteomes.db.core.version>
         <archive.repo.version>0.1.19</archive.repo.version>
         <spectra.cluster.repo.version>1.0.1-SNAPSHOT</spectra.cluster.repo.version>
-        <index.utils.version>0.1.2-SNAPSHOT</index.utils.version>
+        <index.utils.version>0.1.3-SNAPSHOT</index.utils.version>
     </properties>
 
     <build>

@@ -35,7 +35,7 @@ printUsage() {
     echo "     (required) proteomes: Proteomes database environment -> prod | dev | test"
     echo "     (required) cluster:  Cluster database environment -> prod | dev | test"
     echo "     (optional) email: Email to send LSF notification"
-    echo "     (optional) job-params: Allows to add the run.id to relaunch a previous unfinished job (e.g. run.id(long)=4 )"
+    echo "     (optional) job-params: Allows to add the run.id to relaunch a previous unfinished job (e.g. -j run.id(long)=4 )"
 
 }
 
