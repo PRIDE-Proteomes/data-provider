@@ -254,6 +254,12 @@
             <artifactId>hsqldb</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 </project>

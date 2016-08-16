@@ -21,14 +21,13 @@
                       transaction-manager-ref="proteomesTransactionManager"/>
 
     <!--Setup data source using place holder properties-->
-    <bean id="proteomesDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${pride.prot.jdbc.driver}"/>
-        <property name="url" value="${pride.prot.jdbc.url}"/>
-        <property name="username" value="${pride.prot.jdbc.user}"/>
+    <bean id="proteomesDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${pride.prot.jdbc.driver}"/>
+        <property name="jdbcUrl" value="${pride.prot.jdbc.url}"/>
+        <property name="user" value="${pride.prot.jdbc.user}"/>
         <property name="password" value="${pride.prot.jdbc.password}"/>
-        <property name="maxActive" value="6"/>
-        <property name="validationQuery" value="select 1 from dual"/>
-        <property name="testWhileIdle" value="true"/>
+        <!--<property name="validationQuery" value="select 1 from dual"/>-->
+        <!--<property name="testWhileIdle" value="true"/>-->
     </bean>
 
     <tx:annotation-driven transaction-manager="proteomesTransactionManager"/>
